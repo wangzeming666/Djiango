@@ -1,0 +1,22 @@
+Django内置Web服务器，运行在本地，专门用于开发用途，强烈建议不要用这个服务器部署公开页面
+存在开发服务器的几点原因：
+    1. 使用开发服务器，可以直接运行与测试项目和应用，无需完整的生产环境
+    2. 当改动python源码文件并重新载入模块时，开发服务器会自动检测。这样既节省时间，也能方便的使用系统，无需每次编辑代码后手动重启。
+    3. 开发服务器知道如何为Django管理应用程序和显示竞态媒体文件，所以无需立即了解管理方面的内容。
+    
+通过项目中的manage.py工具，可以使用下面这个简单的命令运行开发服务器。
+     (POSIX) $ python ./manage.py runserver
+     (PCs)   C:py\django\mysite> python manage.py runserver
+     
+     
+启动服务器后，应该能看到和下面相似的输出
+
+    Validating models...
+    0 errors found.
+    
+    Django version 1.2, using settings 'mysite.settings'
+    Development server is running at http://127.0.0.1：8000/
+    Quit the server with CONTROL-C.
+    
+即可在浏览器打开 http://127.0.0.1：8000
+显示Django  It worked! 页面
