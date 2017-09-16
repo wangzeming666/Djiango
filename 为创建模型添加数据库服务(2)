@@ -1,0 +1,20 @@
+Django的博客文件下，有一个models.py文件，在这里将定义博客的数据结构。
+遵循的原则是“不要自我重复”（Don't Repeat Yourself, DRY)原则，Django可以从为应用提供的模型信息获取很多好处。
+
+数据模型标识将会存储在数据库每条记录中的数据类型。Django提供了许多字段，用来将数据映射到应用中。
+如CharField, TextField, DateTimeField, BooleanField, XMLField. 可在官方文档查阅完整列表。
+
+使用编辑器打开models.py，添加模型类。
+例:
+    # models.py
+    from django.db import models
+    
+    class BlogPost(models.Model):
+        title = models.CharField(max_length=150)
+        body = models.TextField()
+        timestamp  =models.DateTimeField()
+        
+这是一个完整的模型，表示一个“博文”对象，其中含有四个字段，其中有一个是Django默认创建的字段，该字段可以自动递增，且每个模型唯一。
+创建的BlogPost类，是django.db.models.Model的子类。
+Model是Django中用于数据模型的标准基类，这是Django强大的ORM的核心。
+    
