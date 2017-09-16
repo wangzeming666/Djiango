@@ -1,0 +1,26 @@
+在用 django-admin.py startproject project_name 命令创建好项目以后，就可以创建应用。
+
+创建一个博客应用
+$ ./manage.py startapp blog
+
+这里的blog可以自行起名，不一定要用blog
+在创建完成后，在目录下会出现一个blog文件夹，其中会创建一些应用文件
+下面是一些Django应用文件的对应解释：
+
+    __init__.py   告诉python这是一个包
+    urls.py       应用的URL配置文件("URLconf")，这个文件并不像项目的URLconf那样会自动创建
+    models.py     数据模型
+    views.py      视图函数（即MVC中的控制器）
+    tests.py      单元测试
+    
+与项目类似，应用也是一个Python包。创建应用初始，model.py和view.py文件中还没有真正的代码，
+需要开发者在今后添加代码。单元测试文件tests.py也是如此。
+同样，即使可以使用项目的URLconf来分派访问，也不会自动创建本地应用的URLconf。
+这需要手动创建，接着使用项目URLconf里的include()指令将请求分配给应用的URLconf
+为了让Django知道这个新的应用是项目的一部分，需要编辑settings.py（可以将其理解为配置文件）
+使用编辑器打开这个文件，找到位于底部的INSTALLED_APPS这个元组。将应用名称（blog）添加到元组的末尾。
+    INSTALLED_APPS = (
+        ...
+        'blog',)
+    
+末尾的逗号不是必须的。Django使用INSTALLED_APPS来配置系统的不同部分，包括自动管理应用程序和测试框架。
