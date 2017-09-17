@@ -39,3 +39,8 @@ blog/，将其转接到blog.urls包，即djangosite/blog/urls.py文件。这样�
 两个urlpatterns连接了起来。
 
 注意：url()函数的第1个参数用正则表达式来表达URL路由，本例中^blog/的含义是所有以blog开头的路由。
+
+
+启动Web服务器，manage.py runserver 0.0.0:8001
+在浏览器中输入 http://127.0.0.1:8001/blog/ 
+即可浏览之前创建的blog网页
