@@ -1,0 +1,41 @@
+首先在djangosite/app/views.py中建立一个路有响应函数
+    from django.http import HttpResponse
+    
+    def welcome(request):
+        return HttpResponse("<h1>Welcome to my tiny twitter!<h1>")
+        
+该代码定义了一个函数welcome(), 简单地返回一条被HttpResponse()封装的Welcome信息
+
+
+
+接下来，通过URL映射将用户的HTTP访问与该函数绑定起来。
+在djangosite/blog目录中新建一个urls.py文件，管理应用app中的所有URL映射，其文件内容为：
+    from django.conf.urls import url
+    from . import views
+    
+    urlpatterns = [
+        url(r'', view.welcome),
+      ]
+
+在其中的第1行引入了django.conf.urls中的url()函数，Django中的所有路由映射由该函数生成。
+第2行代码引入了djangosite/blog.views.py模块。之后定义了关键字变量urlpatterns，
+该变量是一个列表，保存所有由url()函数生成的路由映射。本代码中只设置了一个映射，
+即，把所有路由映射到view.py中的welcome函数。
+
+
+
+在项目URL文件djangosite/urls.py的urlpatterns中增加一项，声明对应用app中urls.py文件的引用
+from django.conf.urls import url
+from django.contrib import admin
+from django.conf.urls import include
+
+urlpatterns = [
+    url(r'^blog/', include('blog.urls')),
+    url(r'^admin/', admin.site.urls),
+  ]
+
+首先通过import语句引入django.conf.urls.include()函数，之后在urlpatterns列表中增加一个路径
+blog/，将其转接到blog.urls包，即djangosite/blog/urls.py文件。这样，通过include()函数就将
+两个urlpatterns连接了起来。
+
+注意：url()函数的第1个参数用正则表达式来表达URL路由，本例中^blog/的含义是所有以blog开头的路由。
