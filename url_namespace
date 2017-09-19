@@ -1,0 +1,16 @@
+application namespace
+This describes the name of the application that is being deployed. 
+Every instance of a single application will have the same application namespace. 
+For example, Django’s admin application has the somewhat predictable application namespace of 'admin'.
+instance namespace
+This identifies a specific instance of an application. Instance namespaces should be unique across your entire project.
+However, an instance namespace can be the same as the application namespace. 
+This is used to specify a default instance of an application. 
+For example, the default Django admin instance has an instance namespace of 'admin'.
+Namespaced URLs are specified using the ':' operator. 
+For example, the main index page of the admin application is referenced using 'admin:index'.
+This indicates a namespace of 'admin', and a named URL of 'index'.
+
+Namespaces can also be nested.
+The named URL 'sports:polls:index' would look for a pattern named 'index' in the namespace 'polls'
+that is itself defined within the top-level namespace 'sports'.
