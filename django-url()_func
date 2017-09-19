@@ -90,3 +90,107 @@ If the second pattern matches, page() will use whatever num value was captured b
 
 Each regular expression in a urlpatterns is compiled(编译) the first time it’s accessed[ˈækses].
 This makes the system blazingly(公开宣布) fast.
+
+
+
+
+
+
+Including other URLconfs
+
+At any point, your urlpatterns can “include” other URLconf modules. This essentially “roots” a set of URLs below other ones.
+
+For example, here’s an excerpt(摘录) of the URLconf for the Django website itself. It includes a number of other URLconfs:
+
+from django.conf.urls import include, url
+
+urlpatterns = [
+    # ... snip ...
+    url(r'^community/', include('django_website.aggregator.urls')),
+    url(r'^contact/', include('django_website.contact.urls')),
+    # ... snip ...
+]
+Note that the regular expressions in this example don’t have a $ (end-of-string match character)
+but do include a trailing(后面的) slash(削减). Whenever Django encounters(遭遇) include() (django.conf.urls.include()), 
+it chops(砍) off whatever part of the URL matched up to that point and sends the remaining string to the included URLconf
+for further processing.
+
+Another possibility is to include additional(附加的) URL patterns by using a list of url() instances(实例). For example,
+consider this URLconf:
+
+from django.conf.urls import include, url
+
+from apps.main import views as main_views
+from credit import views as credit_views
+
+extra_patterns = [
+    url(r'^reports/$', credit_views.report),
+    url(r'^reports/(?P<id>[0-9]+)/$', credit_views.report),
+    url(r'^charge/$', credit_views.charge),
+]
+
+urlpatterns = [
+    url(r'^$', main_views.homepage),
+    url(r'^help/', include('apps.help.urls')),
+    url(r'^credit/', include(extra_patterns)),
+]
+
+
+
+
+In this example, the /credit/reports/ URL will be handled by the credit_views.report() Django view.
+
+This can be used to remove redundancy(冗余) from URLconfs where a single pattern prefix(前缀) is used repeatedly. 
+For example, consider this URLconf:
+
+from django.conf.urls import url
+from . import views
+
+urlpatterns = [
+    url(r'^(?P<page_slug>[\w-]+)-(?P<page_id>\w+)/history/$', views.history),
+    url(r'^(?P<page_slug>[\w-]+)-(?P<page_id>\w+)/edit/$', views.edit),
+    url(r'^(?P<page_slug>[\w-]+)-(?P<page_id>\w+)/discuss/$', views.discuss),
+    url(r'^(?P<page_slug>[\w-]+)-(?P<page_id>\w+)/permissions/$', views.permissions),
+]
+We can improve this by stating the common path prefix only once and grouping the suffixes(后缀) that differ:
+
+from django.conf.urls import include, url
+from . import views
+
+urlpatterns = [
+    url(r'^(?P<page_slug>[\w-]+)-(?P<page_id>\w+)/', include([
+        url(r'^history/$', views.history),
+        url(r'^edit/$', views.edit),
+        url(r'^discuss/$', views.discuss),
+        url(r'^permissions/$', views.permissions),
+    ])),
+    ]
+    
+    
+    
+    
+    
+    Captured parameters
+
+An included URLconf receives any captured(俘获) parameters(参数) from parent URLconfs, so the following example is valid:
+
+# In settings/urls/main.py
+from django.conf.urls import include, url
+
+urlpatterns = [
+    url(r'^(?P<username>\w+)/blog/', include('foo.urls.blog')),
+]
+
+# In foo/urls/blog.py
+from django.conf.urls import url
+from . import views
+
+urlpatterns = [
+    url(r'^$', views.blog.index),
+    url(r'^archive/$', views.blog.archive),
+]
+In the above example, the captured "username" variable(变量) is passed to the included URLconf, as expected.
+
+
+
+
