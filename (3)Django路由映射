@@ -1,3 +1,5 @@
+You should always use include() when you include other URL patterns. admin.site.urls is the only exception to this.
+
 首先在djangosite/app/views.py中建立一个路有响应函数
     from django.http import HttpResponse
     
