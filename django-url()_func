@@ -27,3 +27,66 @@ The view parameter is a view function or the result of as_view() for class-based
 
 The kwargs parameter allows you to pass additional arguments to the view function or method. 
 See Passing extra options to view functions for an example.
+
+
+
+Here’s the algorithm the URLconf parser(解析) follows, with respect to named groups vs. non-named groups in a regular expression:
+
+If there are any named arguments, it will use those, ignoring(驳回诉讼) non-named arguments.
+Otherwise, it will pass all non-named arguments as positional(位置的) arguments.
+In both cases, any extra keyword arguments that have been given as per Passing extra options to view functions 
+will also be passed to the view.
+
+
+
+What the URLconf searches against
+
+The URLconf searches against the requested URL, as a normal Python string. This does not include GET or POST parameters(参数),
+or the domain name.
+
+For example, in a request to https://www.example.com/myapp/, the URLconf will look for myapp/.
+
+In a request to https://www.example.com/myapp/?page=3, the URLconf will look for myapp/.
+
+The URLconf doesn’t look at the request method. In other words, all request methods – POST, GET, HEAD, etc. – will be routed(已选择路径) 
+to the same function for the same URL.
+
+
+Captured(俘获) arguments are always strings
+
+Each captured argument is sent to the view as a plain Python string, regardless(不管) of what sort of match the regular 
+expression makes. For example, in this URLconf line:
+
+url(r'^articles/(?P<year>[0-9]{4})/$', views.year_archive),
+…the year argument passed to views.year_archive() will be a string,
+not an integer(整数), even though the [0-9]{4} will only match integer strings.
+
+
+
+
+Specifying(指定) defaults for view arguments
+
+A convenient trick is to specify default parameters(参数) for your views’ arguments. Here’s an example URLconf and view:
+
+# URLconf
+from django.conf.urls import url
+from . import views
+
+urlpatterns = [
+    url(r'^blog/$', views.page),
+    url(r'^blog/page(?P<num>[0-9]+)/$', views.page),
+]
+
+# View (in blog/views.py)
+def page(request, num="1"):
+    # Output the appropriate page of blog entries, according to num.
+    ...
+    
+    
+In the above example, both URL patterns point to the same view – views.page – 
+but the first pattern doesn’t capture(俘获) anything from the URL.
+If the first pattern matches, the page() function will use its default argument for num, "1". 
+If the second pattern matches, page() will use whatever num value was captured by the regex.
+
+Each regular expression in a urlpatterns is compiled(编译) the first time it’s accessed[ˈækses].
+This makes the system blazingly(公开宣布) fast.
