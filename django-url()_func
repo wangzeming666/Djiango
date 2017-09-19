@@ -1,0 +1,29 @@
+url()参数：
+
+当Django找到一个正则表达式匹配时，Django会调用指定的视图函数，其中一个HttpRequest对象作为第一个参数，
+任何来自正则表达式的“捕获”值作为其他参数。如果正则表达式使用简单的捕获，则值作为位置参数传递; 
+如果它使用命名捕获，则值作为关键字参数传递。
+任意关键词参数可以在字典中传递到目标视图。
+
+
+url()
+
+url(regex, view, kwargs=None, name=None)[source]
+urlpatterns should be a list of url() instances. For example:
+
+from django.conf.urls import include, url
+
+urlpatterns = [
+    url(r'^index/$', index_view, name='main-view'),
+    url(r'^weblog/', include('blog.urls')),
+    ...
+]
+The regex parameter should be a string or ugettext_lazy() (see Translating URL patterns)
+that contains a regular expression compatible with Python’s re module. 
+Strings typically use raw string syntax (r'') so that they can contain sequences like \d without 
+the need to escape the backslash with another backslash.
+
+The view parameter is a view function or the result of as_view() for class-based views. It can also be an include().
+
+The kwargs parameter allows you to pass additional arguments to the view function or method. 
+See Passing extra options to view functions for an example.
