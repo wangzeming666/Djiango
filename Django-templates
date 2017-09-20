@@ -1,0 +1,74 @@
+First, create a directory called templates in your polls directory. Django will look for templates in there.
+
+Your project’s TEMPLATES setting describes how Django will load and render templates.
+The default settings file configures a DjangoTemplates backend whose APP_DIRS option is set to True. 
+By convention DjangoTemplates looks for a “templates” subdirectory in each of the INSTALLED_APPS.
+
+Within the templates directory you have just created, create another directory called polls,
+and within that create a file called index.html. In other words, your template should be at polls/templates/polls/index.html. 
+Because of how the app_directories template loader works as described above, 
+you can refer to this template within Django simply as polls/index.html.
+
+Template namespacing
+
+Now we might be able to get away with putting our templates directly in polls/templates (rather than 
+creating another polls subdirectory), but it would actually be a bad idea.
+Django will choose the first template it finds whose name matches, and if you had a template with the same name 
+in a different application, Django would be unable to distinguish between them. We need to be able to point Django at the right one,
+and the easiest way to ensure this is by namespacing them.
+That is, by putting those templates inside another directory named for the application itself.
+Put the following code in that template:
+
+polls/templates/polls/index.html
+{% if latest_question_list %}
+    <ul>
+    {% for question in latest_question_list %}
+        <li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
+Now let’s update our index view in polls/views.py to use the template:
+
+polls/views.py
+from django.http import HttpResponse
+from django.template import loader
+
+from .models import Question
+
+
+def index(request):
+    latest_question_list = Question.objects.order_by('-pub_date')[:5]
+    template = loader.get_template('polls/index.html')
+    context = {
+        'latest_question_list': latest_question_list,
+    }
+    return HttpResponse(template.render(context, request))
+That code loads the template called polls/index.html and passes it a context. 
+The context is a dictionary mapping template variable names to Python objects.
+
+Load the page by pointing your browser at “/polls/”, and you should see a bulleted-list containing the “What’s up” question 
+from Tutorial 2. The link points to the question’s detail page.
+
+A shortcut: render()¶
+
+It’s a very common idiom to load a template, fill a context and return an HttpResponse object with the result of the rendered template. 
+Django provides a shortcut. Here’s the full index() view, rewritten:
+
+polls/views.py
+from django.shortcuts import render
+
+from .models import Question
+
+
+def index(request):
+    latest_question_list = Question.objects.order_by('-pub_date')[:5]
+    context = {'latest_question_list': latest_question_list}
+    return render(request, 'polls/index.html', context)
+Note that once we’ve done this in all these views, we no longer need to import loader and 
+HttpResponse (you’ll want to keep HttpResponse if you still have the stub methods for detail, results, and vote).
+
+The render() function takes the request object as its first argument, a template name as its second argument and
+a dictionary as its optional third argument.
+It returns an HttpResponse object of the given template rendered with the given context.
