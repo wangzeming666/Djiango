@@ -10,5 +10,4 @@
 分页
 用户认证
 后台管理
-这里有一个搜索引擎的简单实现：http://www.jianshu.com/p/5073e25de698   文中可能缺少一个"haystack.signals.RealtimeSignalProcesso"，请注意，
-    也可能不缺少，在官网文档并没有发现此条记录。
+这里有一个搜索引擎的简单实现：http://www.jianshu.com/p/5073e25de698  关于其中使用到的模块有对应的文档可以查看
